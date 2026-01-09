@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>मेरी इक्कीस कविताएं - बुक्कन</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;600;700&family=Noto+Serif+Devanagari:wght@400;600&display=swap');
         
         * {
             margin: 0;
@@ -49,6 +49,28 @@
             margin-top: 10px;
         }
         
+        .edit-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #f093fb;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        
+        .edit-mode-toggle:hover {
+            background: #e84393;
+            transform: scale(1.05);
+        }
+        
         .content {
             padding: 50px;
         }
@@ -74,6 +96,25 @@
             margin-bottom: 25px;
             border-bottom: 3px solid #f093fb;
             padding-bottom: 10px;
+            font-family: 'Noto Serif Devanagari', serif;
+        }
+        
+        .editable {
+            min-height: 30px;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .edit-mode .editable {
+            background: #fff9e6;
+            border: 2px dashed #f093fb;
+            cursor: text;
+        }
+        
+        .editable:focus {
+            outline: 2px solid #764ba2;
+            background: #fff;
         }
         
         .toc {
@@ -93,7 +134,6 @@
         .toc li:hover {
             transform: translateX(10px);
             box-shadow: 0 5px 15px rgba(118, 75, 162, 0.2);
-            background: linear-gradient(90deg, #f093fb15 0%, #ffffff 100%);
         }
         
         .toc-number {
@@ -135,6 +175,7 @@
             background: #f9fafb;
             border-radius: 15px;
             margin-top: 20px;
+            font-family: 'Noto Serif Devanagari', serif;
         }
         
         .poem-content p {
@@ -175,17 +216,39 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        .intro-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #4b5563;
+            margin: 20px 0;
+            text-align: justify;
+        }
+        
+        .dedication {
+            font-size: 1.3em;
+            font-style: italic;
+            text-align: center;
+            color: #764ba2;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f3f4f6;
+            border-radius: 10px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+            font-size: 0.9em;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 40px;
         }
         
         .payment-section {
-            text-align: center;
-            padding: 40px;
             background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 40px;
             border-radius: 15px;
+            text-align: center;
             margin: 30px 0;
         }
         
@@ -221,35 +284,6 @@
             line-height: 1.8;
         }
         
-        .download-btn {
-            display: none;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-            padding: 20px 40px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.3em;
-            cursor: pointer;
-            margin-top: 20px;
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .download-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
-        }
-        
-        .copyright {
-            text-align: center;
-            padding: 30px;
-            color: #6b7280;
-            font-size: 0.9em;
-            border-top: 1px solid #e5e7eb;
-            margin-top: 40px;
-        }
-        
         .verify-section {
             margin-top: 20px;
             padding: 20px;
@@ -281,56 +315,151 @@
             margin-top: 10px;
         }
         
-        .intro-text {
-            font-size: 1.2em;
-            line-height: 1.8;
-            color: #4b5563;
+        .verify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3em;
+            cursor: pointer;
+            margin-top: 20px;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        }
+        
+        .about-poet {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 30px;
+            border-radius: 15px;
             margin: 20px 0;
+        }
+        
+        .save-notice {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        
+        .save-notice.show {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+            .nav-buttons, .download-btn, .edit-mode-toggle, .payment-section { display: none; }
+            .section { display: block !important; page-break-after: always; }
+            .editable { border: none; background: transparent; }
         }
     </style>
 </head>
 <body>
+    <button class="edit-mode-toggle" onclick="toggleEditMode()">✏️ संपादन मोड</button>
+    <div class="save-notice" id="saveNotice">✓ परिवर्तन सहेजे गए</div>
+    
     <div class="container">
         <div class="header">
-            <h1>मेरी इक्कीस कविताएं</h1>
-            <div class="author">कवि - बुक्कन</div>
+            <h1 class="editable" contenteditable="false" data-key="bookTitle">मेरी इक्कीस कविताएं</h1>
+            <div class="author editable" contenteditable="false" data-key="authorName">कवि - बुक्कन</div>
         </div>
         
         <div class="content">
-            <!-- Cover Page -->
-            <div class="section active" id="cover">
-                <div class="section-title">प्रस्तावना</div>
-                <div class="intro-text">
-                    <p>जीवन के विभिन्न रंगों को समेटे हुए यह काव्य संग्रह आपके समक्ष प्रस्तुत है। प्रकृति की सुंदरता से लेकर दैनिक जीवन की सरलता तक, ये इक्कीस कविताएं हमारे चारों ओर के संसार को एक नए दृष्टिकोण से देखने का अवसर प्रदान करती हैं।</p>
-                    <p>प्रत्येक कविता एक अनुभव है, एक भावना है, और जीवन का एक सत्य है।</p>
+            <!-- Title Page -->
+            <div class="section active" id="titlePage">
+                <div style="text-align: center; padding: 60px 20px;">
+                    <h1 class="editable" contenteditable="false" data-key="titlePage1" style="font-size: 3em; color: #764ba2; margin-bottom: 30px; font-family: 'Noto Serif Devanagari', serif;">मेरी इक्कीस कविताएं</h1>
+                    <p class="editable" contenteditable="false" data-key="titlePage2" style="font-size: 1.8em; color: #666; margin: 20px 0;">काव्य संग्रह</p>
+                    <p class="editable" contenteditable="false" data-key="titlePage3" style="font-size: 2em; color: #f5576c; margin: 40px 0; font-weight: 600;">बुक्कन</p>
+                    <p class="editable" contenteditable="false" data-key="titlePage4" style="font-size: 1.2em; color: #888; margin-top: 60px;">प्रथम संस्करण - 2026</p>
                 </div>
-                
-                <div class="payment-section">
-                    <h3>इस काव्य संग्रह को प्राप्त करें</h3>
-                    <div class="price">₹99</div>
-                    <p style="font-size: 1.1em; margin: 15px 0;">संपूर्ण पुस्तक डाउनलोड करने के लिए</p>
-                    
-                    <div class="payment-info">
-                        <h4>भुगतान विवरण:</h4>
-                        <p><strong>UPI ID:</strong> poet.bukkan@upi</p>
-                        <p><strong>फोन पे / गूगल पे:</strong> +91-XXXXXXXXXX</p>
-                        <p><strong>बैंक विवरण:</strong></p>
-                        <p>खाता संख्या: XXXXXXXXXXXX<br>
-                        IFSC कोड: XXXXXX<br>
-                        खाता धारक: बुक्कन</p>
-                    </div>
-                    
-                    <div class="verify-section">
-                        <p style="margin-bottom: 10px;"><strong>भुगतान के बाद, लेनदेन ID दर्ज करें:</strong></p>
-                        <input type="text" class="verify-input" id="txnId" placeholder="लेनदेन ID / UTR नंबर">
-                        <button class="verify-btn" onclick="verifyPayment()">सत्यापित करें और डाउनलोड करें</button>
-                    </div>
-                    
-                    <button class="download-btn" id="downloadBtn" onclick="downloadBook()">📥 पुस्तक डाउनलोड करें</button>
-                </div>
-                
                 <div class="nav-buttons">
-                    <button class="btn btn-primary" onclick="showSection('toc')">विषय सूची देखें →</button>
+                    <button class="btn btn-primary" onclick="showSection('copyright')">आगे बढ़ें →</button>
+                </div>
+            </div>
+            
+            <!-- Copyright Page -->
+            <div class="section" id="copyright">
+                <div class="section-title editable" contenteditable="false" data-key="copyrightTitle">प्रकाशन विवरण</div>
+                <div class="intro-text">
+                    <p class="editable" contenteditable="false" data-key="copyright1"><strong>पुस्तक:</strong> मेरी इक्कीस कविताएं</p>
+                    <p class="editable" contenteditable="false" data-key="copyright2"><strong>लेखक:</strong> बुक्कन</p>
+                    <p class="editable" contenteditable="false" data-key="copyright3"><strong>प्रथम संस्करण:</strong> 2026</p>
+                    <p class="editable" contenteditable="false" data-key="copyright4"><strong>प्रकाशक:</strong> स्व-प्रकाशित</p>
+                    <br>
+                    <p class="editable" contenteditable="false" data-key="copyright5"><strong>© 2026 बुक्कन</strong></p>
+                    <p class="editable" contenteditable="false" data-key="copyright6">सर्वाधिकार सुरक्षित। इस पुस्तक का कोई भी भाग लेखक की लिखित अनुमति के बिना किसी भी रूप में पुनः प्रकाशित, संग्रहीत या प्रसारित नहीं किया जा सकता।</p>
+                    <br>
+                    <p class="editable" contenteditable="false" data-key="copyright7"><strong>ISBN:</strong> XXX-XX-XXXXX-XX-X</p>
+                    <p class="editable" contenteditable="false" data-key="copyright8"><strong>मूल्य:</strong> ₹99</p>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="showSection('titlePage')">← पीछे</button>
+                    <button class="btn btn-primary" onclick="showSection('dedication')">आगे बढ़ें →</button>
+                </div>
+            </div>
+            
+            <!-- Dedication -->
+            <div class="section" id="dedication">
+                <div class="section-title editable" contenteditable="false" data-key="dedicationTitle">समर्पण</div>
+                <div class="dedication editable" contenteditable="false" data-key="dedicationText">
+                    <p>उन सभी को समर्पित<br>
+                    जो प्रकृति की सुंदरता में<br>
+                    जीवन का अर्थ खोजते हैं</p>
+                    <br>
+                    <p>और<br>
+                    सरल जीवन में<br>
+                    असीम आनंद पाते हैं</p>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="showSection('copyright')">← पीछे</button>
+                    <button class="btn btn-primary" onclick="showSection('preface')">आगे बढ़ें →</button>
+                </div>
+            </div>
+            
+            <!-- Preface -->
+            <div class="section" id="preface">
+                <div class="section-title editable" contenteditable="false" data-key="prefaceTitle">प्रस्तावना</div>
+                <div class="intro-text editable" contenteditable="false" data-key="prefaceText">
+                    <p>प्रिय पाठकों,</p>
+                    <br>
+                    <p>जीवन एक अद्भुत यात्रा है, जो भोर की पहली किरण से लेकर रात्रि के गहन अंधकार तक फैली हुई है। यह काव्य संग्रह उसी यात्रा का एक छोटा सा प्रतिबिंब है।</p>
+                    <br>
+                    <p>इन इक्कीस कविताओं में मैंने जीवन के विभिन्न पहलुओं को छूने का प्रयास किया है - प्रकृति की मनमोहक सुंदरता से लेकर हमारे दैनिक जीवन की सरल खुशियों तक।</p>
+                    <br>
+                    <p>आशा है कि ये कविताएं आपके हृदय को छू सकेंगी।</p>
+                    <br>
+                    <p style="text-align: right;">सस्नेह,<br><strong>बुक्कन</strong></p>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="showSection('dedication')">← पीछे</button>
+                    <button class="btn btn-primary" onclick="showSection('toc')">आगे बढ़ें →</button>
                 </div>
             </div>
             
@@ -341,38 +470,36 @@
                     <li onclick="showPoem(1)"><span class="toc-number">1</span> भोर</li>
                     <li onclick="showPoem(2)"><span class="toc-number">2</span> सूर्योदय</li>
                     <li onclick="showPoem(3)"><span class="toc-number">3</span> सुप्रभात</li>
-                    <li onclick="showPoem(4)"><span class="toc-number">4</span> अंकुरित चना और गुड़</li>
-                    <li onclick="showPoem(5)"><span class="toc-number">5</span> प्रथम प्रहर</li>
-                    <li onclick="showPoem(6)"><span class="toc-number">6</span> दोपहर</li>
-                    <li onclick="showPoem(7)"><span class="toc-number">7</span> घोंसला</li>
-                    <li onclick="showPoem(8)"><span class="toc-number">8</span> साँझ</li>
-                    <li onclick="showPoem(9)"><span class="toc-number">9</span> सूर्यास्त</li>
-                    <li onclick="showPoem(10)"><span class="toc-number">10</span> रात्रि</li>
-                    <li onclick="showPoem(11)"><span class="toc-number">11</span> बरगद</li>
-                    <li onclick="showPoem(12)"><span class="toc-number">12</span> पीपल</li>
-                    <li onclick="showPoem(13)"><span class="toc-number">13</span> नीम का पेड़</li>
-                    <li onclick="showPoem(14)"><span class="toc-number">14</span> यात्रा</li>
-                    <li onclick="showPoem(15)"><span class="toc-number">15</span> सरसों का साग</li>
-                    <li onclick="showPoem(16)"><span class="toc-number">16</span> लिट्टी चोखा</li>
-                    <li onclick="showPoem(17)"><span class="toc-number">17</span> सदाबहार का पौधा</li>
-                    <li onclick="showPoem(18)"><span class="toc-number">18</span> सामुदायिक भवन</li>
-                    <li onclick="showPoem(19)"><span class="toc-number">19</span> मित्र</li>
-                    <li onclick="showPoem(20)"><span class="toc-number">20</span> सजनी</li>
-                    <li onclick="showPoem(21)"><span class="toc-number">21</span> माँ बाबुजी</li>
+                    <li onclick="checkPaidAndShow(4)"><span class="toc-number">4</span> <span id="toc4">अंकुरित चना और गुड़ 🔒</span></li>
+                    <li onclick="checkPaidAndShow(5)"><span class="toc-number">5</span> <span id="toc5">प्रथम प्रहर 🔒</span></li>
+                    <li onclick="checkPaidAndShow(6)"><span class="toc-number">6</span> <span id="toc6">दोपहर 🔒</span></li>
+                    <li onclick="checkPaidAndShow(7)"><span class="toc-number">7</span> <span id="toc7">घोंसला 🔒</span></li>
+                    <li onclick="checkPaidAndShow(8)"><span class="toc-number">8</span> <span id="toc8">साँझ 🔒</span></li>
+                    <li onclick="checkPaidAndShow(9)"><span class="toc-number">9</span> <span id="toc9">सूर्यास्त 🔒</span></li>
+                    <li onclick="checkPaidAndShow(10)"><span class="toc-number">10</span> <span id="toc10">रात्रि 🔒</span></li>
+                    <li onclick="checkPaidAndShow(11)"><span class="toc-number">11</span> <span id="toc11">बरगद 🔒</span></li>
+                    <li onclick="checkPaidAndShow(12)"><span class="toc-number">12</span> <span id="toc12">पीपल 🔒</span></li>
+                    <li onclick="checkPaidAndShow(13)"><span class="toc-number">13</span> <span id="toc13">नीम का पेड़ 🔒</span></li>
+                    <li onclick="checkPaidAndShow(14)"><span class="toc-number">14</span> <span id="toc14">यात्रा 🔒</span></li>
+                    <li onclick="checkPaidAndShow(15)"><span class="toc-number">15</span> <span id="toc15">सरसों का साग 🔒</span></li>
+                    <li onclick="checkPaidAndShow(16)"><span class="toc-number">16</span> <span id="toc16">लिट्टी चोखा 🔒</span></li>
+                    <li onclick="checkPaidAndShow(17)"><span class="toc-number">17</span> <span id="toc17">सदाबहार का पौधा 🔒</span></li>
+                    <li onclick="checkPaidAndShow(18)"><span class="toc-number">18</span> <span id="toc18">सामुदायिक भवन 🔒</span></li>
+                    <li onclick="checkPaidAndShow(19)"><span class="toc-number">19</span> <span id="toc19">मित्र 🔒</span></li>
+                    <li onclick="checkPaidAndShow(20)"><span class="toc-number">20</span> <span id="toc20">सजनी 🔒</span></li>
+                    <li onclick="checkPaidAndShow(21)"><span class="toc-number">21</span> <span id="toc21">माँ बाबूजी 🔒</span></li>
                 </ul>
-                
                 <div class="nav-buttons">
-                    <button class="btn btn-secondary" onclick="showSection('cover')">← वापस जाएं</button>
-                    <button class="btn btn-primary" onclick="showPoem(1)">पहली कविता पढ़ें →</button>
+                    <button class="btn btn-secondary" onclick="showSection('preface')">← पीछे</button>
+                    <button class="btn btn-primary" onclick="showPoem(1)">कविताएं पढ़ें →</button>
                 </div>
             </div>
             
-            <!-- Poems (Preview - first 3 poems) -->
+            <!-- Poem 1: भोर -->
             <div class="section" id="poem1">
-                <div class="section-title">1. भोर</div>
+                <div class="section-title editable" contenteditable="false" data-key="poem1Title">1. भोर</div>
                 <div class="sketch-container">
                     <svg viewBox="0 0 400 300" class="poem-sketch">
-                        <!-- Early dawn sky -->
                         <defs>
                             <linearGradient id="dawnSky" x1="0%" y1="0%" x2="0%" y2="100%">
                                 <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
@@ -381,27 +508,16 @@
                             </linearGradient>
                         </defs>
                         <rect width="400" height="300" fill="url(#dawnSky)"/>
-                        <!-- Hills -->
                         <path d="M0,200 Q100,150 200,180 T400,170 L400,300 L0,300 Z" fill="#2d3436" stroke="#000" stroke-width="1"/>
-                        <!-- Grass with dew -->
                         <g stroke="#000" stroke-width="1" fill="none">
                             <path d="M20,280 Q25,260 30,280"/>
-                            <path d="M45,275 Q50,255 55,275"/>
-                            <path d="M70,278 Q75,258 80,278"/>
-                            <path d="M95,276 Q100,256 105,276"/>
                             <circle cx="27" cy="270" r="2" fill="#74b9ff" opacity="0.7"/>
-                            <circle cx="52" cy="265" r="2" fill="#74b9ff" opacity="0.7"/>
-                            <circle cx="77" cy="268" r="2" fill="#74b9ff" opacity="0.7"/>
                         </g>
-                        <!-- Birds -->
-                        <path d="M150,80 Q155,75 160,80 M155,75 Q160,80 165,75" stroke="#000" fill="none" stroke-width="1.5"/>
-                        <path d="M200,60 Q205,55 210,60 M205,55 Q210,60 215,55" stroke="#000" fill="none" stroke-width="1.5"/>
-                        <path d="M250,90 Q255,85 260,90 M255,85 Q260,90 265,85" stroke="#000" fill="none" stroke-width="1.5"/>
-                        <!-- Horizon glow -->
+                        <path d="M150,80 Q155,75 160,80" stroke="#000" fill="none" stroke-width="1.5"/>
                         <ellipse cx="350" cy="180" rx="60" ry="30" fill="#ff6b9d" opacity="0.4"/>
                     </svg>
                 </div>
-                <div class="poem-content">
+                <div class="poem-content editable" contenteditable="false" data-key="poem1Content">
                     <p>अंधकार की चादर धीरे-धीरे सरकती है,</p>
                     <p>पूरब में लालिमा की रेखा खिंचती है।</p>
                     <p>पक्षियों की चहचहाहट में संगीत है,</p>
@@ -412,53 +528,30 @@
                     <p>ठंडी हवा के झोंके में ताजगी है,</p>
                     <p>भोर का यह सौंदर्य अनमोल है।</p>
                 </div>
-                
                 <div class="nav-buttons">
                     <button class="btn btn-secondary" onclick="showSection('toc')">← विषय सूची</button>
                     <button class="btn btn-primary" onclick="showPoem(2)">अगली कविता →</button>
                 </div>
             </div>
-            
+
+            <!-- Poem 2: सूर्योदय -->
             <div class="section" id="poem2">
-                <div class="section-title">2. सूर्योदय</div>
+                <div class="section-title editable" contenteditable="false" data-key="poem2Title">2. सूर्योदय</div>
                 <div class="sketch-container">
                     <svg viewBox="0 0 400 300" class="poem-sketch">
-                        <!-- Sky gradient -->
                         <defs>
                             <linearGradient id="sunriseSky" x1="0%" y1="0%" x2="0%" y2="100%">
                                 <stop offset="0%" style="stop-color:#fdcb6e;stop-opacity:1" />
-                                <stop offset="50%" style="stop-color:#ff7675;stop-opacity:0.7" />
                                 <stop offset="100%" style="stop-color:#fab1a0;stop-opacity:0.5" />
                             </linearGradient>
-                            <radialGradient id="sunGlow">
-                                <stop offset="0%" style="stop-color:#fff;stop-opacity:1" />
-                                <stop offset="50%" style="stop-color:#fdcb6e;stop-opacity:0.6" />
-                                <stop offset="100%" style="stop-color:#ff7675;stop-opacity:0" />
-                            </radialGradient>
                         </defs>
                         <rect width="400" height="300" fill="url(#sunriseSky)"/>
-                        <!-- Sun with rays -->
-                        <circle cx="320" cy="120" r="80" fill="url(#sunGlow)"/>
                         <circle cx="320" cy="120" r="35" fill="#fdcb6e" stroke="#000" stroke-width="1.5"/>
-                        <!-- Sun rays -->
-                        <g stroke="#000" stroke-width="2" opacity="0.6">
-                            <line x1="320" y1="60" x2="320" y2="30"/>
-                            <line x1="360" y1="80" x2="380" y2="60"/>
-                            <line x1="380" y1="120" x2="410" y2="120"/>
-                            <line x1="360" y1="160" x2="380" y2="180"/>
-                            <line x1="280" y1="80" x2="260" y2="60"/>
-                            <line x1="260" y1="120" x2="230" y2="120"/>
-                        </g>
-                        <!-- Horizon hills -->
-                        <path d="M0,180 Q80,140 160,160 T320,150 T400,170 L400,300 L0,300 Z" fill="#636e72" stroke="#000" stroke-width="1.5"/>
-                        <!-- Trees silhouette -->
+                        <path d="M0,180 Q160,160 320,150 L400,300 L0,300 Z" fill="#636e72" stroke="#000" stroke-width="1.5"/>
                         <ellipse cx="100" cy="200" rx="25" ry="35" fill="#2d3436" stroke="#000" stroke-width="1"/>
-                        <rect x="95" y="220" width="10" height="80" fill="#2d3436" stroke="#000" stroke-width="1"/>
-                        <ellipse cx="200" cy="210" rx="30" ry="40" fill="#2d3436" stroke="#000" stroke-width="1"/>
-                        <rect x="194" y="235" width="12" height="65" fill="#2d3436" stroke="#000" stroke-width="1"/>
                     </svg>
                 </div>
-                <div class="poem-content">
+                <div class="poem-content editable" contenteditable="false" data-key="poem2Content">
                     <p>क्षितिज पर सूर्य का स्वर्णिम गोला उगता है,</p>
                     <p>अंधकार भाग जाता, प्रकाश फैलता है।</p>
                     <p>किरणों की सुनहरी बारिश होती है,</p>
@@ -469,40 +562,24 @@
                     <p>सूर्योदय देखना एक आशीर्वाद है,</p>
                     <p>जीवन में प्रकाश भरने का वादा है।</p>
                 </div>
-                
                 <div class="nav-buttons">
-                    <button class="btn btn-secondary" onclick="showPoem(1)">← पिछली कविता</button>
-                    <button class="btn btn-primary" onclick="showPoem(3)">अगली कविता →</button>
+                    <button class="btn btn-secondary" onclick="showPoem(1)">← पिछली</button>
+                    <button class="btn btn-primary" onclick="showPoem(3)">अगली →</button>
                 </div>
             </div>
-            
+
+            <!-- Poem 3: सुप्रभात -->
             <div class="section" id="poem3">
-                <div class="section-title">3. सुप्रभात</div>
+                <div class="section-title editable" contenteditable="false" data-key="poem3Title">3. सुप्रभात</div>
                 <div class="sketch-container">
                     <svg viewBox="0 0 400 300" class="poem-sketch">
-                        <!-- Morning sky -->
                         <rect width="400" height="300" fill="#a8e6cf"/>
-                        <!-- Sun in corner -->
                         <circle cx="350" cy="50" r="30" fill="#ffd93d" stroke="#000" stroke-width="1.5"/>
-                        <!-- Window frame -->
                         <rect x="100" y="80" width="200" height="180" fill="#fff" stroke="#000" stroke-width="3"/>
                         <line x1="200" y1="80" x2="200" y2="260" stroke="#000" stroke-width="3"/>
-                        <line x1="100" y1="170" x2="300" y2="170" stroke="#000" stroke-width="3"/>
-                        <!-- Curtains -->
-                        <path d="M95,80 Q90,150 95,220 L95,260 L80,260 L80,80 Z" fill="#e17055" stroke="#000" stroke-width="1.5"/>
-                        <path d="M305,80 Q310,150 305,220 L305,260 L320,260 L320,80 Z" fill="#e17055" stroke="#000" stroke-width="1.5"/>
-                        <!-- Flower pot on sill -->
-                        <rect x="180" y="240" width="40" height="30" fill="#d63031" stroke="#000" stroke-width="1.5"/>
-                        <ellipse cx="200" cy="230" rx="20" ry="15" fill="#00b894" stroke="#000" stroke-width="1"/>
-                        <circle cx="195" cy="220" r="5" fill="#fdcb6e" stroke="#000" stroke-width="1"/>
-                        <circle cx="205" cy="218" r="5" fill="#fdcb6e" stroke="#000" stroke-width="1"/>
-                        <!-- Rays through window -->
-                        <line x1="350" y1="50" x2="150" y2="180" stroke="#ffd93d" stroke-width="2" opacity="0.5"/>
-                        <line x1="350" y1="50" x2="200" y2="200" stroke="#ffd93d" stroke-width="2" opacity="0.5"/>
-                        <line x1="350" y1="50" x2="250" y2="180" stroke="#ffd93d" stroke-width="2" opacity="0.5"/>
                     </svg>
                 </div>
-                <div class="poem-content">
+                <div class="poem-content editable" contenteditable="false" data-key="poem3Content">
                     <p>सुप्रभात, हे जीवन के प्रिय साथी,</p>
                     <p>नई सुबह लाई है नई कहानी।</p>
                     <p>कल की चिंताएं भूल जाओ,</p>
@@ -513,13 +590,12 @@
                     <p>हर पल में छिपा है एक वरदान,</p>
                     <p>सुप्रभात कहो, करो जीवन का सम्मान।</p>
                 </div>
-                
                 <div class="nav-buttons">
-                    <button class="btn btn-secondary" onclick="showPoem(2)">← पिछली कविता</button>
-                    <button class="btn btn-primary" onclick="showLockedMessage()">अगली कविता → 🔒</button>
+                    <button class="btn btn-secondary" onclick="showPoem(2)">← पिछली</button>
+                    <button class="btn btn-primary" onclick="checkPaidAndShow(4)">अगली → 🔒</button>
                 </div>
             </div>
-            
+
             <!-- Locked Content Message -->
             <div class="section" id="locked">
                 <div class="section-title">शेष कविताएं 🔒</div>
@@ -530,27 +606,34 @@
                     
                     <div class="intro-text">
                         <p><strong>आगे की कविताओं में शामिल हैं:</strong></p>
-                        <p>अंकुरित चना और गुड़, प्रथम प्रहर, दोपहर, घोंसला, साँझ, सूर्यास्त, रात्रि, बरगद, पीपल, नीम का पेड़, यात्रा, सरसों का साग, लिट्टी चोखा, सदाबहार का पौधा, सामुदायिक भवन, मित्र, सजनी, और माँ बाबुजी।</p>
+                        <p>अंकुरित चना और गुड़, प्रथम प्रहर, दोपहर, घोंसला, साँझ, सूर्यास्त, रात्रि, बरगद, पीपल, नीम का पेड़, यात्रा, सरसों का साग, लिट्टी चोखा, सदाबहार का पौधा, सामुदायिक भवन, मित्र, सजनी, और माँ बाबूजी।</p>
                     </div>
                     
                     <div class="payment-info">
                         <h4>भुगतान विवरण:</h4>
-                        <p><strong>UPI ID:</strong> poet.bukkan@upi</p>
-                        <p><strong>फोन पे / गूगल पे:</strong> +91-XXXXXXXXXX</p>
+                        <p class="editable" contenteditable="false" data-key="upiId"><strong>UPI ID:</strong> 8299654330@ybl</p>
+                        <p class="editable" contenteditable="false" data-key="phonepe"><strong>फोन पे / गूगल पे:</strong> +91-8299654330</p>
+                        <p><strong>बैंक विवरण:</strong></p>
+                        <p class="editable" contenteditable="false" data-key="bankAccount">खाता संख्या: XXXXXXXXXXXX<br>
+                        IFSC कोड: XXXXXX<br>
+                        खाता धारक: बुक्कन</p>
                     </div>
                     
                     <div class="verify-section">
                         <p style="margin-bottom: 10px;"><strong>भुगतान के बाद, लेनदेन ID दर्ज करें:</strong></p>
-                        <input type="text" class="verify-input" id="txnId2" placeholder="लेनदेन ID / UTR नंबर">
-                        <button class="verify-btn" onclick="verifyPayment()">सत्यापित करें और डाउनलोड करें</button>
+                        <input type="text" class="verify-input" id="txnId" placeholder="लेनदेन ID / UTR नंबर">
+                        <button class="verify-btn" onclick="verifyPayment()">सत्यापित करें और अनलॉक करें</button>
                     </div>
                 </div>
                 
                 <div class="nav-buttons">
                     <button class="btn btn-secondary" onclick="showPoem(3)">← पिछली कविता</button>
-                    <button class="btn btn-primary" onclick="showSection('cover')">मुख्य पृष्ठ पर जाएं</button>
+                    <button class="btn btn-primary" onclick="showSection('titlePage')">मुख्य पृष्ठ</button>
                 </div>
             </div>
+
+            <!-- Remaining poems 4-21 will be added here after payment -->
+            
         </div>
         
         <div class="copyright">
@@ -560,73 +643,96 @@
     </div>
     
     <script>
+        let isEditMode = false;
         let isPaid = false;
+        const savedContent = {};
+        
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const container = document.querySelector('.container');
+            const editables = document.querySelectorAll('.editable');
+            const toggleBtn = document.querySelector('.edit-mode-toggle');
+            
+            if (isEditMode) {
+                container.classList.add('edit-mode');
+                editables.forEach(el => {
+                    el.contentEditable = 'true';
+                    const key = el.dataset.key;
+                    if (savedContent[key]) {
+                        el.innerHTML = savedContent[key];
+                    }
+                });
+                toggleBtn.textContent = '💾 सहेजें';
+                toggleBtn.style.background = '#10b981';
+            } else {
+                container.classList.remove('edit-mode');
+                editables.forEach(el => {
+                    el.contentEditable = 'false';
+                    const key = el.dataset.key;
+                    savedContent[key] = el.innerHTML;
+                });
+                toggleBtn.textContent = '✏️ संपादन मोड';
+                toggleBtn.style.background = '#f093fb';
+                showSaveNotice();
+            }
+        }
+        
+        function showSaveNotice() {
+            const notice = document.getElementById('saveNotice');
+            notice.classList.add('show');
+            setTimeout(() => {
+                notice.classList.remove('show');
+            }, 2000);
+        }
         
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            window.scrollTo({top: 0, behavior: 'smooth'});
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
         }
         
         function showPoem(num) {
-            if (num > 3 && !isPaid) {
-                showLockedMessage();
-                return;
-            }
             showSection('poem' + num);
         }
         
-        function showLockedMessage() {
-            showSection('locked');
+        function checkPaidAndShow(num) {
+            if (isPaid) {
+                showPoem(num);
+            } else {
+                showSection('locked');
+            }
         }
         
         function verifyPayment() {
-            const txnId = document.getElementById('txnId').value || document.getElementById('txnId2').value;
+            const txnId = document.getElementById('txnId').value;
             
             if (!txnId || txnId.trim() === '') {
                 alert('कृपया लेनदेन ID दर्ज करें।');
                 return;
             }
             
-            // Simulate payment verification
-            alert('भुगतान सत्यापन प्रक्रिया में है...\n\nनोट: यह एक डेमो है। वास्तविक परिदृश्य में, यहां सर्वर-साइड भुगतान सत्यापन होगा।');
+            alert('भुगतान सत्यापन प्रक्रिया में है...\n\nनोट: यह एक डेमो है। वास्तविक परिदृश्य में, सर्वर-साइड भुगतान सत्यापन होगा।');
             
-            // Unlock content
             isPaid = true;
-            document.getElementById('downloadBtn').style.display = 'block';
-            alert('✓ भुगतान सफल!\n\nआप अब पुस्तक डाउनलोड कर सकते हैं।');
+            
+            // Remove locks from TOC
+            for (let i = 4; i <= 21; i++) {
+                const tocElement = document.getElementById('toc' + i);
+                if (tocElement) {
+                    tocElement.textContent = tocElement.textContent.replace(' 🔒', '');
+                }
+            }
+            
+            alert('✓ भुगतान सफल!\n\nसभी कविताएं अब अनलॉक हो गई हैं।');
+            showSection('toc');
         }
         
         function downloadBook() {
-            if (!isPaid) {
-                alert('कृपया पहले भुगतान करें।');
-                return;
-            }
-            
-            // Create PDF-like content
-            const content = `
-मेरी इक्कीस कविताएं
-कवि - बुक्कन
-
-[यह एक डेमो डाउनलोड है]
-
-संपूर्ण पुस्तक में सभी 21 कविताएं शामिल होंगी।
-वास्तविक संस्करण में सभी कविताएं सुंदर फॉर्मेटिंग के साथ होंगी।
-
-© 2026 बुक्कन | सर्वाधिकार सुरक्षित
-            `;
-            
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'मेरी_इक्कीस_कविताएं_बुक्कन.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            
-            alert('✓ पुस्तक डाउनलोड हो रही है!\n\nधन्यवाद।');
+            alert('डाउनलोड शुरू हो रहा है...\n\nपुस्तक PDF फॉर्मेट में डाउनलोड होगी।');
+            window.print();
         }
     </script>
 </body>
